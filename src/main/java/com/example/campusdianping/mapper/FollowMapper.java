@@ -2,6 +2,7 @@ package com.example.campusdianping.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.campusdianping.entity.follow.Follow;
+import org.apache.ibatis.annotations.Mapper;
 
 
 /**
@@ -12,6 +13,7 @@ import com.example.campusdianping.entity.follow.Follow;
  * @author 虎哥
  * @since 2021-12-22
  */
+@Mapper
 public interface FollowMapper extends BaseMapper<Follow> {
 
 }

@@ -24,7 +24,7 @@ import java.io.IOException;
 public class SmsAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private boolean postOnly = true;
     private String phoneParameter = PoneConstant.phoneParameter;
-    private String smsCodeParameter = PoneConstant.phoneParameter;
+    private String smsCodeParameter = PoneConstant.smsCodeParameter;
     // 设置拦截/sms/login短信登录接口
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher("/sms/login", "POST");

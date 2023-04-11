@@ -22,6 +22,12 @@ import java.time.LocalDateTime;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public User(String nickName,String icon,Long id){
+        this.nickName = nickName;
+        this.icon = icon;
+        this.id = id;
+
+    }
 
     /**
      * 主键

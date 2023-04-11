@@ -54,6 +54,36 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Override
     public Result queryHotBlog(Integer current) {
+        return null;
+    }
+
+    @Override
+    public Result queryBlogById(Long id) {
+        return null;
+    }
+
+    @Override
+    public Result likeBlog(Long id) {
+        return null;
+    }
+
+    @Override
+    public Result queryBlogLikes(Long id) {
+        return null;
+    }
+
+    @Override
+    public Result saveBlog(Blog blog) {
+        return null;
+    }
+
+    @Override
+    public Result queryBlogOfFollow(Long max, Integer offset) {
+        return null;
+    }
+
+
+    /*public Result queryHotBlog(Integer current) {
         // 根据用户查询
         Page<Blog> page = query()
                 .orderByDesc("liked")
@@ -71,7 +101,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
      * 根据查询某个blog的详情信息
      * @param id blog id
      * @return Result 携带blogVO的返回格式
-     * */
+
     @Override
     public Result queryBlogById(Long id) {
         // 1.查询blog（先查redis中，不存在则查数据库，然后放到redis中，设置过期时间
@@ -105,7 +135,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
      * 当前用户是否访问过该blog
      * @param blogvo
      *
-     * */
+
     private void isBlogLiked(BlogVO blogvo) {
         // 1.获取登录用户
         User user = UserHolder.getUser();
@@ -123,17 +153,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
      * 查询当前blog的对应的用户信息
      * @param blogvo 当前博客信息
      *
-     * */
+
     private void queryBlogUser(BlogVO blogvo) {
         Long userId = blogvo.getUserId();
         User user = userService.getById(userId);
         blogvo.setName(user.getNickName());
         blogvo.setIcon(user.getIcon());
     }
-    /**
+
      * 用户点赞blog
-     * */
-    @Override
+     */
+    /*@Override
     public Result likeBlog(Long id) {
         // 1.获取登录用户
         Long userId = UserHolder.getUser().getId();
@@ -251,8 +281,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         r.setOffset(os);
         r.setMinTime(minTime);*/
 
-        return Result.ok(null);
-    }
+        //return Result.ok(null);
+
 
 
 }

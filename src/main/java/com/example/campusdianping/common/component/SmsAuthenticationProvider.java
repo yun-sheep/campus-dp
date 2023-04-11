@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.example.campusdianping.common.config.SmsAuthenticationToken;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
 import com.example.campusdianping.entity.SecurityUser;
+import com.example.campusdianping.service.Impl.SmsUserDetailsService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,10 +25,9 @@ import javax.annotation.Resource;
 public class SmsAuthenticationProvider implements AuthenticationProvider {
     @Resource
     private RedisUtils redisUtils;
-    private UserDetailsService userDetailsServiceImpl;
-    public SmsAuthenticationProvider(@Qualifier("smsUserDetailsService") UserDetailsService userDetailsServiceImpl){
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
-    }
+    @Resource
+    private SmsUserDetailsService smsUserDetailsService;
+
     //进行认证
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -48,10 +48,10 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         if (!inputCode.equals(redisCode)) {
             throw new BadCredentialsException("输入的验证码不正确，请重新输入");
         }
-        //认证成功之后才把用户信息查出来并且放在redis中
-        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(phone);
+        //认证成功之后才把用户信息查出来并且放在redis中（执行的是一个查用户的操作和存在redis操作，以及查该用户验证的操作）
+        SecurityUser securityUser = smsUserDetailsService.loadUserByUsername(phone);
         //3、重新创建已经认证对象
-        SmsAuthenticationToken authenticationToken1 = new SmsAuthenticationToken(principal,inputCode, userDetails.getAuthorities());
+        SmsAuthenticationToken authenticationToken1 = new SmsAuthenticationToken(securityUser,inputCode, securityUser.getAuthorities());
         authenticationToken1.setDetails(authenticationToken.getDetails());
         return authenticationToken1;
     }

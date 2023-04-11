@@ -160,13 +160,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok(count);
     }
 
-    private User createUserWithPhone(String phone) {
-        // 1.创建用户
-        User user = new User();
-        user.setPhone(phone);
-        user.setNickName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(10));
-        // 2.保存用户
-        save(user);
-        return user;
-    }
 }

@@ -2,8 +2,6 @@ package com.example.campusdianping.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -13,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * @Description SecurityConfig配置类
@@ -34,13 +31,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //TODO 怎么把
         // 关闭csrf，开启跨域支持
-        http.csrf().disable().cors();
+        /*http.csrf().disable().cors();
         http.authorizeRequests()
                 .antMatchers("/login", "/sms/send/code", "/sms/login").permitAll()
                 .anyRequest()
                 .authenticated();
         //添加手机号短信登录
-        http.apply(smsSecurityConfigurerAdapter);
+        http.apply(smsSecurityConfigurerAdapter);*/
+        http
+                .formLogin()
+                .loginPage("/login")
+                .and()
+                .apply(smsSecurityConfigurerAdapter)
+                .and()
+                // 设置URL的授权
+                .authorizeRequests()
+                // 这里需要将登录页面放行
+                .antMatchers( "/sms/send/code", "/sms/login").permitAll()
+                // anyRequest() 所有请求   authenticated() 必须被认证
+                .anyRequest()
+                .authenticated()
+                .and()
+                // 关闭csrf
+                .csrf().disable();
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

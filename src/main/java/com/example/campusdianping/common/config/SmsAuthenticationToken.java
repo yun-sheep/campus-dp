@@ -13,9 +13,13 @@ import java.util.Collection;
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    //存放认证信息，认证之前放的是手机号，认证之后SecurityUser
     private final Object principal;
-    private Object credentials;
-
+    private final Object credentials;
+    /**
+     * 功能描述：创建用户身份验证令牌需要用到此构造函数
+     * 返回值：通过身份验证的代码返回false
+     */
     public SmsAuthenticationToken(Object principal, Object credentials) {
         super((Collection) null);
         this.principal = principal;
@@ -32,7 +36,7 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return null;
+        return this.credentials;
     }
 
     @Override

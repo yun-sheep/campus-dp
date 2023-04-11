@@ -37,6 +37,21 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
 
     @Override
     public Result follow(Long followUserId, Boolean isFollow) {
+        return null;
+    }
+
+    @Override
+    public Result isFollow(Long followUserId) {
+        return null;
+    }
+
+    @Override
+    public Result followCommons(Long id) {
+        return null;
+    }
+
+   /* @Override
+    public Result follow(Long followUserId, Boolean isFollow) {
         // 1.获取登录用户
         Long userId = UserHolder.getUser().getId();
         String key = "follows:" + userId;
@@ -93,5 +108,5 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
                 .map(user -> BeanUtil.copyProperties(user, UserVO.class))
                 .collect(Collectors.toList());
         return Result.ok(users);
-    }
+    }*/
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2023/4/3 15:10
  */
 @RestController
-@RequestMapping("/sms")
+@RequestMapping("sms")
 @Slf4j
 public class SmsEndpoint {
     @Autowired
