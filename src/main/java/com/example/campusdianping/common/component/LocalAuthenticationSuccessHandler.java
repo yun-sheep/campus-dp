@@ -42,7 +42,7 @@ public class LocalAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         //为什么这个东西转换不成功
 
         UserVO userVO = BeanUtil.copyProperties(securityUser,UserVO.class);
-        int flag = redisUtils.add(tokenKey,userVO);
+        int flag = redisUtils.add(tokenKey,securityUser);
 
 
         //TODO 把Token和UserVO传回去给前端

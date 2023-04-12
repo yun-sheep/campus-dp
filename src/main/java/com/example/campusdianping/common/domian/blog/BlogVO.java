@@ -33,19 +33,19 @@ public class BlogVO {
     private List<MultipartFile> images;
     //
     /**
-     * 用户id
+     * 发布用户id
      */
     private Long userId;
     /**
-     * 用户图标
+     * 发布用户图标
      */
     private String icon;
     /**
-     * 用户姓名
+     * 发布用户姓名
      */
     private String name;
     /**
-     * 是否点赞过了
+     * 是否被当前登录用户点赞过了
      */
     private Boolean isLike;
     /**

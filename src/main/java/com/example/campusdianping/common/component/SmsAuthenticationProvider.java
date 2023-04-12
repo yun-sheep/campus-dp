@@ -5,7 +5,10 @@ import com.example.campusdianping.common.config.SmsAuthenticationToken;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
 import com.example.campusdianping.entity.SecurityUser;
 import com.example.campusdianping.service.Impl.SmsUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -22,11 +25,15 @@ import javax.annotation.Resource;
  * @date 2023/4/3 20:20
  */
 @Component
+@Slf4j
 public class SmsAuthenticationProvider implements AuthenticationProvider {
     @Resource
     private RedisUtils redisUtils;
     @Resource
     private SmsUserDetailsService smsUserDetailsService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
 
     //进行认证
     @Override
@@ -40,12 +47,15 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         }
         // 获取输入的验证码
         String inputCode = (String)  authentication.getCredentials();
-        //1、检查Redis手机号的验证码
-        String redisCode = redisUtils.get(phone).toString();
+        //1、检查Redis手机号的验证码(redis
+        String redisCode = stringRedisTemplate.opsForValue().get(phone);
+        log.info(redisCode+"验证码");
         if(StrUtil.isEmpty(redisCode)){
+            log.info("验证码已过期或者尚未发送，请重新输入");
             throw new BadCredentialsException("验证码已过期或者尚未发送，请重新输入");
         }
         if (!inputCode.equals(redisCode)) {
+            log.info("输入的验证码不正确，请重新输入");
             throw new BadCredentialsException("输入的验证码不正确，请重新输入");
         }
         //认证成功之后才把用户信息查出来并且放在redis中（执行的是一个查用户的操作和存在redis操作，以及查该用户验证的操作）
