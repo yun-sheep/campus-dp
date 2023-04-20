@@ -1,4 +1,4 @@
-package com.example.campusdianping.entity;
+package com.example.campusdianping.entity.redis;
 
 import lombok.Data;
 

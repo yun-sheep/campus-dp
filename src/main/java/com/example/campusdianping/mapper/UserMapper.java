@@ -1,7 +1,7 @@
 package com.example.campusdianping.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.campusdianping.entity.User;
+import com.example.campusdianping.entity.user.User;
 import org.apache.ibatis.annotations.Mapper;
 
 

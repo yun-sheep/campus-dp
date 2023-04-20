@@ -1,5 +1,6 @@
-package com.example.campusdianping.common.domian;
+package com.example.campusdianping.common.domian.vo;
 
+import com.example.campusdianping.common.domian.ResultStatus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -64,7 +64,7 @@ public class VoucherOrderServiceImp1 extends ServiceImpl<VoucherOrderMapper, Vou
             //两种解决方法：1、自己注入自己，2、获取当前对象的代理对象，用代理对象的
             //return voucherOrderServiceImp1.createVoucherOrder(userId);
             IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
-            return proxy.seckillVoucher(voucherId);
+            return proxy.createVoucherOrder(voucherId);
 
         }
     }

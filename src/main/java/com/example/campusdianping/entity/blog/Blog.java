@@ -24,6 +24,14 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @TableName("tb_blog")
 public class Blog implements Serializable {
+    /***(照片的存储格式（这个换成cos里面objectkey就行)
+     * /imgs/blogs/7/14/4771fefb-1a87-4252-816c-9f7ec41ffa4a.jpg,
+     * /imgs/blogs/4/10/2f07e3c9-ddce-482d-9ea7-c21450f8d7cd.jpg,
+     * /imgs/blogs/2/6/b0756279-65da-4f2d-b62a-33f74b06454a.jpg,
+     * /imgs/blogs/10/7/7e97f47d-eb49-4dc9-a583-95faa7aed287.jpg,
+     * /imgs/blogs/1/2/4a7b496b-2a08-4af7-aa95-df2c3bd0ef97.jpg,
+     * /imgs/blogs/14/3/52b290eb-8b5d-403b-8373-ba0bb856d18e.jpg
+     */
 
     private static final long serialVersionUID = 1L;
 

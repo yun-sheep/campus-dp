@@ -17,8 +17,7 @@ import javax.annotation.Resource;
  * @auther j2-yizhiyang
  * @date 2023/4/3 15:29
  */
-@Configuration
-@EnableWebSecurity(debug = true)
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private SmsSecurityConfigurerAdapter smsSecurityConfigurerAdapter;
@@ -47,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 设置URL的授权
                 .authorizeRequests()
                 // 这里需要将登录页面放行
-                .antMatchers( "/sms/send/code", "/sms/login").permitAll()
+                .antMatchers(  "/sms/login").permitAll()
                 // anyRequest() 所有请求   authenticated() 必须被认证
                 .anyRequest()
                 .authenticated()

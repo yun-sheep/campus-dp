@@ -1,4 +1,4 @@
-package com.example.campusdianping.common.domian;
+package com.example.campusdianping.common.domian.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

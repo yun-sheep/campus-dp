@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * @auther j2-yizhiyang
  * @date 2023/4/3 20:38
  */
-@Configuration
+
 public class SmsSecurityConfigurerAdapter
         extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>{
     @Resource

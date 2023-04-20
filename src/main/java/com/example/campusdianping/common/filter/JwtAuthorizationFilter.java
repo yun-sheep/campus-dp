@@ -6,37 +6,31 @@ import javax.servlet.FilterChain;
 import com.example.campusdianping.common.config.SmsAuthenticationToken;
 import com.example.campusdianping.common.constant.RedisConstants;
 import com.example.campusdianping.common.constant.TokenConstant;
-import com.example.campusdianping.common.domian.user.UserVO;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
 import com.example.campusdianping.common.utils.token.JwtUtils;
-import com.example.campusdianping.entity.SecurityUser;
+import com.example.campusdianping.entity.user.SecurityUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.Claims;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+
 /**
  * @Description 处理所有的请求（如果没有token就放行到登录认证过滤器）
  * @auther j2-yizhiyang
  * @date 2023/4/3 14:13
  */
-@Component
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+public class JwtAuthorizationFilter {
     @Resource
     private RedisUtils redisUtils;
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    @Override
+
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {

@@ -1,14 +1,12 @@
 package com.example.campusdianping.controller.sms;
 
 import cn.hutool.core.util.RandomUtil;
-import com.example.campusdianping.common.domian.JsonVO;
 import com.example.campusdianping.common.domian.Result;
-import com.example.campusdianping.common.domian.SmsCodeVO;
-import com.example.campusdianping.common.utils.RegexUtils;
+import com.example.campusdianping.common.domian.vo.SmsCodeVO;
+import com.example.campusdianping.common.utils.regex.RegexUtils;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

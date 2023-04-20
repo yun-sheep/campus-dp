@@ -1,11 +1,7 @@
 package com.example.campusdianping.service.Impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campusdianping.common.domian.Result;
-import com.example.campusdianping.common.domian.UserHolder;
-import com.example.campusdianping.common.domian.user.UserVO;
 import com.example.campusdianping.entity.follow.Follow;
 import com.example.campusdianping.mapper.FollowMapper;
 import com.example.campusdianping.service.IFollowService;
@@ -14,10 +10,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>

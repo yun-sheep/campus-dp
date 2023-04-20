@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campusdianping.common.constant.RedisConstants;
 import com.example.campusdianping.common.domian.Result;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
-import com.example.campusdianping.entity.RedisData;
+import com.example.campusdianping.entity.redis.RedisData;
 import com.example.campusdianping.entity.shop.Shop;
 import com.example.campusdianping.mapper.ShopMapper;
 import com.example.campusdianping.service.IShopService;
@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @Description shop的实现类

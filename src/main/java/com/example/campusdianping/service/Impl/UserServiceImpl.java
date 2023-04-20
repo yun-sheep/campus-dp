@@ -7,8 +7,10 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campusdianping.common.domian.Result;
 import com.example.campusdianping.common.domian.UserHolder;
-import com.example.campusdianping.common.utils.RegexUtils;
-import com.example.campusdianping.entity.User;
+import com.example.campusdianping.common.utils.regex.RegexUtils;
+import com.example.campusdianping.controller.user.LoginFormDTO;
+import com.example.campusdianping.controller.user.UserDTO;
+import com.example.campusdianping.entity.user.User;
 import com.example.campusdianping.mapper.UserMapper;
 import com.example.campusdianping.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +19,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.campusdianping.common.constant.RedisConstants.*;
@@ -40,7 +43,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Result sendCode(String phone, HttpSession session) {
+    public Result sendCode(String phone) {
         // 1.校验手机号
         if (RegexUtils.isPhoneInvalid(phone)) {
             // 2.如果不符合，返回错误信息
@@ -48,6 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 3.符合，生成验证码
         String code = RandomUtil.randomNumbers(6);
+        System.out.println(code);
 
         // 4.保存验证码到 session
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);
@@ -58,8 +62,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok();
     }
 
-    /*@Override
-    public Result login(LoginFormDTO loginForm, HttpSession session) {
+    @Override
+    public Result login(LoginFormDTO loginForm) {
         // 1.校验手机号
         String phone = loginForm.getPhone();
         if (RegexUtils.isPhoneInvalid(phone)) {
@@ -86,6 +90,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 7.保存用户信息到 redis中
         // 7.1.随机生成token，作为登录令牌
         String token = UUID.randomUUID().toString(true);
+        log.info("token",token);
         // 7.2.将User对象转为HashMap存储
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
@@ -100,7 +105,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         // 8.返回token
         return Result.ok(token);
-    }*/
+    }
 
     @Override
     public Result sign() {
@@ -158,6 +163,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             num >>>= 1;
         }
         return Result.ok(count);
+    }
+    private User createUserWithPhone(String phone) {
+        // 1.创建用户
+        User user = new User();
+        user.setPhone(phone);
+        user.setNickName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(10));
+        // 2.保存用户
+        save(user);
+        return user;
     }
 
 }

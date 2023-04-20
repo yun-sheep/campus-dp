@@ -1,15 +1,13 @@
 package com.example.campusdianping.common.component;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.example.campusdianping.common.domian.user.UserVO;
+import com.example.campusdianping.common.domian.vo.user.UserVO;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
 import com.example.campusdianping.common.utils.token.JwtUtils;
-import com.example.campusdianping.entity.SecurityUser;
+import com.example.campusdianping.entity.user.SecurityUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +37,7 @@ public class LocalAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         String token = JwtUtils.generateToken(securityUser.id);
         String tokenKey = LOGIN_USER_KEY + securityUser.getId();
-        //为什么这个东西转换不成功
+
 
         UserVO userVO = BeanUtil.copyProperties(securityUser,UserVO.class);
         int flag = redisUtils.add(tokenKey,securityUser);

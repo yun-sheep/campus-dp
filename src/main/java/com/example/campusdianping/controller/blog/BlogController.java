@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campusdianping.common.constant.SystemConstants;
 import com.example.campusdianping.common.domian.Result;
 import com.example.campusdianping.common.domian.UserHolder;
-import com.example.campusdianping.common.domian.user.UserVO;
-import com.example.campusdianping.entity.SecurityUser;
+import com.example.campusdianping.entity.user.SecurityUser;
 import com.example.campusdianping.entity.blog.Blog;
 import com.example.campusdianping.service.IBlogService;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +50,8 @@ public class BlogController {
 
     @GetMapping("/hot")
     public Result queryHotBlog(@RequestParam(value = "current", defaultValue = "1") Integer current) {
-        return blogService.queryHotBlog(current);
+        return null;
+        //return blogService.queryHotBlog(current);
     }
 
     @GetMapping("/{id}")

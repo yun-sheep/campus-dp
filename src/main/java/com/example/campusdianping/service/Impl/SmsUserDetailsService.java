@@ -1,9 +1,7 @@
 package com.example.campusdianping.service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.campusdianping.entity.SecurityUser;
-import com.example.campusdianping.entity.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.example.campusdianping.entity.user.SecurityUser;
+import com.example.campusdianping.entity.user.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

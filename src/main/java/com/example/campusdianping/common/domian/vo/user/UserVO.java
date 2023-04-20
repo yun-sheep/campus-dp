@@ -1,4 +1,4 @@
-package com.example.campusdianping.common.domian.user;
+package com.example.campusdianping.common.domian.vo.user;
 
 import lombok.Data;
 

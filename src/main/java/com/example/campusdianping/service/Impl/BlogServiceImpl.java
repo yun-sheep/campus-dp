@@ -7,21 +7,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campusdianping.common.constant.RedisConstants;
 import com.example.campusdianping.common.constant.SystemConstants;
 import com.example.campusdianping.common.domian.Result;
-import com.example.campusdianping.common.domian.UserHolder;
-import com.example.campusdianping.common.domian.blog.BlogVO;
-import com.example.campusdianping.common.domian.user.UserVO;
+import com.example.campusdianping.common.domian.vo.blog.BlogVO;
+import com.example.campusdianping.common.domian.vo.user.UserVO;
 import com.example.campusdianping.common.utils.redisutils.RedisUtils;
-import com.example.campusdianping.entity.SecurityUser;
-import com.example.campusdianping.entity.User;
+import com.example.campusdianping.common.utils.user.UserHolder;
+import com.example.campusdianping.controller.user.UserDTO;
+import com.example.campusdianping.entity.user.SecurityUser;
+import com.example.campusdianping.entity.user.User;
 import com.example.campusdianping.entity.blog.Blog;
 import com.example.campusdianping.entity.follow.Follow;
 import com.example.campusdianping.mapper.BlogMapper;
 import com.example.campusdianping.service.IBlogService;
 import com.example.campusdianping.service.IFollowService;
 import com.example.campusdianping.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,8 +34,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.example.campusdianping.common.constant.RedisConstants.BLOG_LIKED_KEY;
-import static com.example.campusdianping.common.constant.RedisConstants.FEED_KEY;
+import static com.example.campusdianping.common.constant.RedisConstants.*;
 
 /**
  * @Description blog服务实现类
@@ -39,6 +42,7 @@ import static com.example.campusdianping.common.constant.RedisConstants.FEED_KEY
  * @date 2023/4/3 19:48
  */
 @Service
+@Slf4j
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
     @Resource
     private IUserService userService;
@@ -51,6 +55,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Resource
     private  RedisUtils redisUtils;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
 
     /**
@@ -87,6 +93,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         if (!redisUtils.isExist(key)) {
            blog = getById(id);
             redisUtils.add(key,blog,60*60L, TimeUnit.SECONDS);
+            //blog的点赞数放在里面
+            stringRedisTemplate.opsForHash().put(BLOG_LIKED_COUNT_KEY,id,blog.getLiked());
         }
         else {
             blog  = (Blog) redisUtils.get(key);
@@ -109,12 +117,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     }
     /**
      * 当前用户是否点赞过该blog
-     * @param blogvo
+     * @param blogvo blogvo对象
      *
     */
     private void isBlogLiked(BlogVO blogvo) {
         // 1.获取登录用户
-        SecurityUser user = UserHolder.getUser();
+        UserDTO user = UserHolder.getUser();
         if (user == null) {
             // 用户未登录，无需查询是否点赞
             return;
@@ -138,9 +146,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         blogvo.setIcon(user.getIcon());
     }
 
-     /** 用户点赞blog
+     /**
+      * 用户点赞blog
+      * @param id 当前blog的id
      */
     @Override
+    @Transactional
     public Result likeBlog(Long id) {
         // 1.获取登录用户
         Long userId = UserHolder.getUser().getId();
@@ -151,23 +162,34 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             // 3.如果未点赞，可以点赞
             // 3.1.数据库点赞数 + 1
             //TODO 定时任务将redis里面的点赞写入数据库
-            boolean isSuccess = update().setSql("liked = liked + 1").eq("id", id).update();
-            // 3.2.保存用户到Redis的set集合  zadd key value score
-            if (isSuccess) {
-                stringRedisTemplate.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());
+            //这个原子性问题没有解决
+            if(redisTemplate.opsForHash().hasKey(BLOG_LIKED_COUNT_KEY,id)){
+                Integer count = (Integer) redisTemplate.opsForHash().get(BLOG_LIKED_COUNT_KEY,id);
+                log.info("count",count);
+                redisTemplate.opsForHash().put(BLOG_LIKED_COUNT_KEY,id,count+1);
             }
+            else {
+                //不对啊，这个怎么存的啊(为什么只能存字符类型啊）
+                redisTemplate.opsForHash().put(BLOG_LIKED_COUNT_KEY,id,1);
+            }
+
+            // 3.2.保存用户到Redis的set集合（点赞的顺序）  zadd key value score
+            stringRedisTemplate.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());
         } else {
             // 4.如果已点赞，取消点赞
             // 4.1.数据库点赞数 -1
-            boolean isSuccess = update().setSql("liked = liked - 1").eq("id", id).update();
+            //boolean isSuccess = update().setSql("liked = liked - 1").eq("id", id).update();
+
             // 4.2.把用户从Redis的set集合移除
-            if (isSuccess) {
+
                 stringRedisTemplate.opsForZSet().remove(key, userId.toString());
-            }
+
         }
         return Result.ok();
     }
-
+    /**
+     * 查询当前blog的点赞用户
+     * */
     @Override
     public Result queryBlogLikes(Long id) {
         String key = BLOG_LIKED_KEY + id;
@@ -195,7 +217,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result saveBlog(Blog blog) {
         // 1.获取登录用户
-        SecurityUser user = UserHolder.getUser();
+        UserDTO user = com.example.campusdianping.common.utils.user.UserHolder.getUser();
+
         blog.setUserId(user.getId());
         // 2.保存探店笔记
         boolean isSuccess = save(blog);
@@ -204,7 +227,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         }
         // 3.查询笔记作者的所有粉丝 select * from tb_follow where follow_user_id = ?
         List<Follow> follows = followService.query().eq("follow_user_id", user.getId()).list();
-        // TODO 可以写成异步的（消息队列来做）
+        // TODO 可以写成异步的（消息队列->就是可以使用多个消费者监听的）
         for (Follow follow : follows) {
             // 4.1.获取粉丝id
             Long userId = follow.getUserId();

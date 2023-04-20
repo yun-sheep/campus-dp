@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @Description
+ * @Description 使用分布式锁解决优惠券秒杀问题
  * @auther j2-yizhiyang
  * @date 2023/4/14 16:56
  */
@@ -39,6 +39,11 @@ import java.util.concurrent.Executors;
 public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, VoucherOrder> implements IVoucherOrderService {
     @Override
     public Result seckillVoucher(Long voucherId) {
+        return null;
+    }
+
+    @Override
+    public Result createVoucherOrder(Long voucherId) {
         return null;
     }
 

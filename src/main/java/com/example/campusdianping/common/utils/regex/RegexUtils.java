@@ -1,4 +1,4 @@
-package com.example.campusdianping.common.utils;
+package com.example.campusdianping.common.utils.regex;
 
 import cn.hutool.core.util.StrUtil;
 import com.example.campusdianping.common.constant.RegexPatterns;
